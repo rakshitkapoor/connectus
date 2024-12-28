@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "309654271374",
+    "project_id": "connectus-backend-52b36",
+    "storage_bucket": "connectus-backend-52b36.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309654271374:android:bf1ce1e2f9837fab97a0df",
+        "android_client_info": {
+          "package_name": "com.example.connectus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4xXSKiP2fAl5xOMpem4xdOJH9al2aoAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
