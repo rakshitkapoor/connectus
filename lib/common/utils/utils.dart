@@ -21,3 +21,5 @@ Future<File?> pickImageFromGallery(BuildContext context) async{
   }
   return image;
 }
+
+const DEFAULT_PROFILE_PIC="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg";
