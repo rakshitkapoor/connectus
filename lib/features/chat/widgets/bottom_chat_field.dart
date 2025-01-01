@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:connectus/colors.dart';
 import 'package:connectus/common/enums/message_enums.dart';
+import 'package:connectus/common/providers/message_reply_provider.dart';
 import 'package:connectus/common/utils/utils.dart';
 import 'package:connectus/features/chat/controller/chat_controller.dart';
+import 'package:connectus/features/chat/widgets/message_reply_preview.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,7 +25,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   final TextEditingController _messageController = TextEditingController();
   FlutterSoundRecorder? _soundRecorder;
   bool isRecorderInit = false;
-  bool isRecording=false;
+  bool isRecording = false;
   bool isShowSendButton = false;
   bool isShowEmojiContainer = false;
   FocusNode focusNode = FocusNode();
@@ -32,19 +34,18 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _soundRecorder= FlutterSoundRecorder();
+    _soundRecorder = FlutterSoundRecorder();
     openAudio();
   }
 
-  void openAudio() async{
+  void openAudio() async {
     final status = await Permission.microphone.request();
-    if(status!=PermissionStatus.granted){
+    if (status != PermissionStatus.granted) {
       throw RecordingPermissionException("Mic Permission not allowed");
     }
     await _soundRecorder!.openRecorder();
-    isRecorderInit= true;
+    isRecorderInit = true;
   }
-
 
   void sendTextMessage() async {
     if (isShowSendButton) {
@@ -59,19 +60,17 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
       setState(() {
         _messageController.text = '';
       });
-    } else{
-      var tempDir= await getTemporaryDirectory();
-      var path='${tempDir.path}/flutter_sound.aac';
-      if(!isRecorderInit){
+    } else {
+      var tempDir = await getTemporaryDirectory();
+      var path = '${tempDir.path}/flutter_sound.aac';
+      if (!isRecorderInit) {
         return;
       }
-      if(isRecording){
+      if (isRecording) {
         await _soundRecorder!.stopRecorder();
         sendFileMessage(File(path), MessageEnums.audio);
-      }else{
-        await _soundRecorder!.startRecorder(
-          toFile: path
-        );
+      } else {
+        await _soundRecorder!.startRecorder(toFile: path);
       }
 
       setState(() {
@@ -131,13 +130,16 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
     super.dispose();
     _messageController.dispose();
     _soundRecorder!.closeRecorder();
-    isRecorderInit=false;
+    isRecorderInit = false;
   }
 
   @override
   Widget build(BuildContext context) {
+    final messageReply = ref.watch(messageReplyProvider);
+    final isShowMessageReply = messageReply != null;
     return Column(
       children: [
+        isShowMessageReply ? const MessageReplyPreview() : const SizedBox(),
         Row(
           children: [
             Expanded(
@@ -211,7 +213,11 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
                 child: GestureDetector(
                   onTap: sendTextMessage,
                   child: Icon(
-                    isShowSendButton ? Icons.send : isRecording ? Icons.close : Icons.mic,
+                    isShowSendButton
+                        ? Icons.send
+                        : isRecording
+                        ? Icons.close
+                        : Icons.mic,
                     color: Colors.white,
                   ),
                 ),
@@ -228,9 +234,9 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
                     _messageController.text =
                         _messageController.text + emoji.emoji;
                   });
-                  if(!isShowSendButton){
+                  if (!isShowSendButton) {
                     setState(() {
-                      isShowSendButton=true;
+                      isShowSendButton = true;
                     });
                   }
                 },
