@@ -47,5 +47,7 @@
 	<true/>
 	<key>NSContactsUsageDescription</key>
     <string>Reason we need access to the contact list</string>
+	<key>NSAppleMusicUsageDescription</key>
+    <string>Needs to hear audio recordings</string>
 </dict>
 </plist>

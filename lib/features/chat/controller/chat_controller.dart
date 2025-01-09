@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:connectus/common/enums/message_enums.dart';
+import 'package:connectus/common/providers/message_reply_provider.dart';
 import 'package:connectus/features/auth/controller/auth_controller.dart';
 import 'package:connectus/features/chat/repository/chat_repository.dart';
 import 'package:connectus/models/chat_contact.dart';
@@ -32,6 +33,7 @@ class ChatController {
     String text,
     String recieverUserId,
   ) {
+    final messageReply = ref.read(messageReplyProvider);
     ref
         .read(userDataAuthProvider)
         .whenData(
@@ -40,8 +42,10 @@ class ChatController {
             text: text,
             recieverUserId: recieverUserId,
             senderUser: value!,
+            messageReply: messageReply,
           ),
         );
+    ref.read(messageReplyProvider.notifier).update((state) => null);
   }
 
   void sendFileMessage(
@@ -50,6 +54,7 @@ class ChatController {
     String recieverUserId,
     MessageEnums messageEnum,
   ) {
+    final messageReply = ref.read(messageReplyProvider);
     ref
         .read(userDataAuthProvider)
         .whenData(
@@ -60,7 +65,17 @@ class ChatController {
             senderUserData: value!,
             messageEnum: messageEnum,
             ref: ref,
+            messageReply: messageReply,
           ),
         );
+    ref.read(messageReplyProvider.notifier).update((state) => null);
+  }
+
+  void setChatMessageSeen(
+    BuildContext context,
+    String recieverUserId,
+    String messageId,
+  ) {
+    chatRepository.chatMessageSeen(context, recieverUserId, messageId);
   }
 }
